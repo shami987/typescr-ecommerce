@@ -19,11 +19,8 @@ desserts.forEach(dessert => {
   grid.appendChild(card);
 });
 
-/* ---------- RENDER DESSERTS ---------- */
-desserts.forEach(dessert => {
-  const card = renderDessertCard(dessert, addDessertToCart);
-  grid.appendChild(card);
-});
+// reflect current cart state on page load so totals are hidden when empty
+updateCartUI();
 
 /* ---------- MODAL ELEMENTS ---------- */
 const orderModal = document.getElementById("orderModal") as HTMLElement;

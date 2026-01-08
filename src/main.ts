@@ -15,7 +15,13 @@ const deliveryBadge = document.querySelector(".delivery-badge")! as HTMLElement;
 const confirmBtn = document.querySelector(".confirm-order")! as HTMLElement;
 /* ---------- RENDER DESSERTS ---------- */
 desserts.forEach(dessert => {
-  const card = renderDessertCard(dessert, addDessertToCart);
+  const existing = cart.getItems().find(i => i.dessert.id === dessert.id);
+  const initialQty = existing ? existing.quantity : 0;
+
+  const card = renderDessertCard(dessert, addDessertToCart, (id, quantity) => {
+    cart.updateQuantity(id, quantity);
+    updateCartUI();
+  }, initialQty);
   grid.appendChild(card);
 });
 
@@ -66,16 +72,21 @@ function updateCartUI() {
     const div = document.createElement("div");
     div.className = "cart-item";
     div.innerHTML = `
-      <div>
-        <span class="name">${item.dessert.name}</span>
-        <span class="item-price">$${(item.dessert.price * item.quantity).toFixed(2)}</span>
+      <div class="left">
+        <div class="qty-controls badge">
+          <button class="qty-decr" data-id="${item.dessert.id}" aria-label="Decrease">−</button>
+          <span class="qty-value">${item.quantity}</span>
+          <button class="qty-incr" data-id="${item.dessert.id}" aria-label="Increase">+</button>
+        </div>
+        <div class="meta">
+          <span class="name">${item.dessert.name}</span>
+          <span class="unit-price">@ $${item.dessert.price.toFixed(2)}</span>
+        </div>
       </div>
-      <div class="qty-controls">
-        <button class="qty-decr" data-id="${item.dessert.id}" aria-label="Decrease">−</button>
-        <span class="qty-value">${item.quantity}</span>
-        <button class="qty-incr" data-id="${item.dessert.id}" aria-label="Increase">+</button>
+      <div class="right">
+        <span class="subtotal">$${(item.dessert.price * item.quantity).toFixed(2)}</span>
+        <button class="remove-btn" data-id="${item.dessert.id}" aria-label="Remove">✕</button>
       </div>
-      <button class="remove-btn" data-id="${item.dessert.id}">✕</button>
     `;
     cartItems.appendChild(div);
 

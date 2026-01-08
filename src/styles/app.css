@@ -28,6 +28,7 @@ body {
   border-radius: 12px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .card img {
@@ -37,22 +38,71 @@ body {
   border-radius: 10px;
 }
 
-.card .add-btn {
-  width: 100%;
+.card .category {
   margin-top: 8px;
-  padding: 8px;
-  border-radius: 20px;
-  border: 1px solid #c0392b;
-  background: none;
-  color: #c0392b;
+  color: #b4a9a3;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+
+
+/* Add-to-cart pill centered overlapping the image */
+.card .add-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 110px; /* overlaps image (image height 160px) */
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 28px;
+  border: 2px solid #c9412b;
+  background: #fff;
+  color: #c9412b;
   cursor: pointer;
+  box-shadow: 0 8px 24px rgba(201,57,43,0.06);
+  margin: 0;
+  z-index: 6;
 }
 
 .card .add-btn:hover {
-  background: #c0392b;
-  color: white;
+  /* keep stationary on hover; subtle shadow increase */
+  box-shadow: 0 10px 28px rgba(201,57,43,0.09);
 }
-.card .icon-add-to-cart { display: inline-block; vertical-align: middle }
+
+.card .icon-add-to-cart {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
+/* make icon inherit button color when possible; fallback via filter */
+.card .add-btn .icon-add-to-cart { filter: hue-rotate(-10deg) saturate(2) brightness(0.2); }
+
+/* make the button sit visually overlapping the image like the sample */
+.card {
+  padding-bottom: 40px; /* room for overlapping button */
+}
+.card .add-btn span { font-weight: 700; color: #c9412b }
+
+/* Card typography */
+.card .category { font-size: 13px; color: #9e8f88; text-transform: none; margin-top: 18px }
+.card h4 { margin: 6px 0 8px 0; font-size: 20px; color: #222; line-height: 1.1 }
+.card p { margin: 0; color: #c9412b; font-weight: 700; font-size: 18px }
+
+/* card subtle elevation */
+.card { box-shadow: 0 6px 18px rgba(0,0,0,0.04) }
+
+/* inline quantity control that replaces Add button */
+.card .action-wrap { display:flex; justify-content:center }
+.card .card-qty { display:inline-flex; align-items:center; gap:12px; background: #c9412b; padding: 8px 12px; border-radius: 999px; color: #fff; box-shadow: 0 8px 20px rgba(201,57,43,0.12); }
+.card .card-qty button { width:32px; height:32px; border-radius:50%; border:none; background: rgba(255,255,255,0.12); color:#fff; font-weight:700; cursor:pointer }
+.card .card-qty .qty-value { min-width:28px; text-align:center; display:inline-block; background:#fff; color:#c9412b; padding:6px 8px; border-radius:12px; font-weight:800 }
+
+.card .action-wrap .add-btn { background: #fff; border: 2px solid #c9412b }
+.card .action-wrap .add-btn span { color: #c9412b }
 
 /* RIGHT */
 .cart {
@@ -227,6 +277,24 @@ body {
   margin-bottom: 6px;
 }
 
+/* refined cart item layout to match reference */
+.cart-item .left { display:flex; align-items:center; gap:12px; flex:1 }
+.cart-item .right { display:flex; align-items:center; gap:10px; flex-shrink:0 }
+
+.cart-item .meta { display:flex; flex-direction:column }
+.cart-item .meta .name { font-weight:700; color:#222 }
+.cart-item .meta .unit-price { color:#9e8f88; font-size:13px }
+
+.cart-item .subtotal { font-weight:800; color:#222; min-width:64px; text-align:right }
+
+/* compact quantity badge with +/- controls */
+.cart-item .qty-controls.badge { display:inline-flex; align-items:center; gap:8px; padding:4px 6px; border-radius:999px; background: #fff; border: 1px solid rgba(201,57,43,0.08); }
+.cart-item .qty-controls.badge button { width:28px; height:28px; border-radius:8px; border: none; background: transparent; color:#c9412b; font-weight:700; cursor:pointer }
+.cart-item .qty-controls.badge .qty-value { min-width:20px; text-align:center; font-weight:700; color:#222 }
+
+.cart-item .remove-btn { background: white; border: 1px solid #f3f0ee; color: #c9412b; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer }
+.cart-item .remove-btn:hover { background:#fef5f3 }
+
 /* quantity controls inside cart */
 .cart-item .qty-controls {
   display: inline-flex;
@@ -268,6 +336,11 @@ body {
   .modal-content { margin: 12px 8px; width: calc(100% - 16px); max-width: 100%; padding: 16px; border-radius: 10px; max-height: calc(100vh - 24px); }
   .cart-item { flex-direction: column; align-items: flex-start; gap: 8px }
   .cart-item .qty-controls { margin-left: 0 }
+
+  /* reposition add/qty control to sit below the image and be full-width friendly */
+  .card .action-wrap { position: static; margin-top: 12px; width: 100%; display:flex; justify-content:center }
+  .card .action-wrap .add-btn { position: static; left: auto; transform: none; top: auto; width: calc(100% - 24px); max-width: 360px; }
+  .card .card-qty { width: calc(100% - 24px); justify-content: center; padding: 10px 14px }
 }
 
 @media (max-width: 360px) {

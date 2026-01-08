@@ -2,7 +2,9 @@ import type { Dessert } from "../types/Dessert";
 
 export function renderDessertCard(
   dessert: Dessert,
-  onAdd: (dessert: Dessert) => void
+  onAdd: (dessert: Dessert, quantity?: number) => void,
+  onSetQuantity?: (dessertId: string, quantity: number) => void,
+  initialQty: number = 0
 ): HTMLDivElement {
 
   const card = document.createElement("div");
@@ -10,21 +12,79 @@ export function renderDessertCard(
 
   card.innerHTML = `
     <img src="${dessert.image}" alt="${dessert.name}">
+    <div class="action-wrap">
+      <button class="add-btn" aria-label="Add to cart">
+        <img class="icon-add-to-cart" src="image/icon-add-to-cart.svg" alt="" aria-hidden="true">
+        <span>Add to Cart</span>
+      </button>
+    </div>
+    <div class="category">${dessert.subtitle ? dessert.subtitle : dessert.category}</div>
     <h4>${dessert.name}</h4>
     <p>$${dessert.price.toFixed(2)}</p>
-    <button class="add-btn" aria-label="Add to cart">
-      <svg class="icon-add-to-cart" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M3 3h2l.4 2M7 13h10l3-8H6.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M16 21a1 1 0 11-2 0 1 1 0 012 0zM8 21a1 1 0 11-2 0 1 1 0 012 0z" fill="currentColor"/>
-        <path d="M19 7v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M21 9h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <span>Add to Cart</span>
-    </button>
   `;
 
-  const addBtn = card.querySelector('.add-btn') as HTMLButtonElement;
-  addBtn.addEventListener('click', () => onAdd(dessert));
+  // local quantity state for this card
+  let qty = 0;
+
+  const actionWrap = card.querySelector('.action-wrap') as HTMLDivElement;
+  const renderAddButton = () => {
+    actionWrap.innerHTML = `
+      <button class="add-btn" aria-label="Add to cart">
+        <img class="icon-add-to-cart" src="image/icon-add-to-cart.svg" alt="" aria-hidden="true">
+        <span>Add to Cart</span>
+      </button>
+    `;
+    const addBtn = actionWrap.querySelector('.add-btn') as HTMLButtonElement;
+    addBtn.addEventListener('click', () => {
+      // add one and switch to qty controls
+      onAdd(dessert, 1);
+      qty = 1;
+      renderQtyControls();
+    });
+  };
+
+  const renderQtyControls = () => {
+    actionWrap.innerHTML = `
+      <div class="card-qty">
+        <button class="qty-decr">−</button>
+        <span class="qty-value">${qty}</span>
+        <button class="qty-incr">+</button>
+      </div>
+    `;
+
+    const decr = actionWrap.querySelector('.qty-decr') as HTMLButtonElement;
+    const incr = actionWrap.querySelector('.qty-incr') as HTMLButtonElement;
+    const val = actionWrap.querySelector('.qty-value') as HTMLElement;
+
+    incr.addEventListener('click', () => {
+      // increment: add one more
+      onAdd(dessert, 1);
+      qty += 1;
+      val.textContent = String(qty);
+    });
+
+    decr.addEventListener('click', () => {
+      // decrement: if reaches 0, remove and show Add button
+      const newQ = qty - 1;
+      if (onSetQuantity) {
+        onSetQuantity(dessert.id, newQ);
+      }
+      if (newQ <= 0) {
+        qty = 0;
+        renderAddButton();
+      } else {
+        qty = newQ;
+        val.textContent = String(qty);
+      }
+    });
+  };
+
+  // initial render
+  renderAddButton();
+  if (initialQty && initialQty > 0) {
+    qty = initialQty;
+    renderQtyControls();
+  }
 
   return card;
 }

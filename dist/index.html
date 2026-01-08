@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dessert Shop</title>
+    <link rel="stylesheet" href="src/styles/app.css">
+</head>
+<body>
+    <main class="container">
+     <!-- left: dessert list -->
+      <section class="desserts">
+      <h2>Desserts</h2>
+      <div id="dessertGrid" class="grid"></div>
+    </section>
+      <!-- RIGHT: CART -->
+    <aside class="cart">
+      <h3>Your Cart (<span id="cartCount">0</span>)</h3>
+
+      <div id="cartItems" class="cart-items">
+        <div class="empty">
+          <img src="image/burger.jpeg" alt="Empty cart" />
+          <p>Your added items will appear here</p>
+        </div>
+      </div>
+
+      <div class="cart-total">
+        <strong>Total:</strong>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <div class="delivery-badge">This is a carbon-neutral delivery</div>
+      <button class="confirm-order">Confirm Order</button>
+    </aside>
+    </main>
+
+    
+    <script type="module" src="dist/main.js"></script>
+    <div id="orderModal" class="modal" aria-hidden="true">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <button class="modal-close" aria-label="Close">✕</button>
+        <div class="modal-body">
+          <!-- Modal content populated by JS -->
+        </div>
+      </div>
+    </div>
+</body>
+</html>
